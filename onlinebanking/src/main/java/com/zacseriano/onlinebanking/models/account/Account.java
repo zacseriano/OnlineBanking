@@ -6,6 +6,7 @@ import java.util.Objects;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+import javax.validation.constraints.DecimalMin;
 import javax.validation.constraints.NotNull;
 
 import com.zacseriano.onlinebanking.models.user.User;
@@ -18,13 +19,19 @@ public class Account {
 	
 	@NotNull @Id
 	private String number;
-	@NotNull 
+	@NotNull @DecimalMin(value = "0.0", inclusive = true)
 	private BigDecimal balance;
-	@ManyToOne
+	@NotNull @ManyToOne
 	private User user;
 	
 	public Account() {
 		
+	}
+	
+	public Account(@NotNull String number, @NotNull BigDecimal balance, @NotNull User user) {
+		this.number = number;
+		this.balance = balance;
+		this.user = user;
 	}
 
 	public String getNumber() {

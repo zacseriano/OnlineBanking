@@ -28,7 +28,7 @@ public class UserResource {
 	 * HTTP Status:
 	 * 
 	 * 200 - OK: Tudo ocorreu como esperado
-	 * 400 - Bad Request: Já existe um gestor cadastrado
+	 * 400 - Bad Request: Já existe um Usuário cadastrado
 	 * 401 - Unauthorized: Chave da API inválida
 	 * 403 - Forbidden: A chave da API não tem permissão para fazer a requisição
 	 * 404 - Not Found: O recurso requisitado não existe

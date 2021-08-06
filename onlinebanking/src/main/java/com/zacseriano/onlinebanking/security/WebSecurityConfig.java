@@ -13,7 +13,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 /*
- * Classe que implementa as configurações da Spring Security da Lanchonete Java API
+ * Classe que implementa as configurações da Spring Security do Online Banking API
  */
 @Configuration
 @EnableWebSecurity
@@ -64,7 +64,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter{
 	@Override
 	protected void configure(HttpSecurity httpSecurity) throws Exception{
 		httpSecurity.csrf().disable().authorizeRequests()
-		.antMatchers("/account/**").hasRole("CLIENTE")
+		.antMatchers("/account/**").hasRole("USER")
 		.antMatchers(AUTH_WHITELIST).permitAll()  
 		.anyRequest().authenticated().and()
 		.exceptionHandling().and().sessionManagement()
