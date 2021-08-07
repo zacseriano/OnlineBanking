@@ -63,13 +63,13 @@ public class AccountResource {
 	}
 	
 	@PostMapping("/transfer")
-	@Transactional
+	@Transactional	
 	@SuppressWarnings("unused")
 	public ResponseEntity<AccountTransferDto> transfer(@RequestBody @Valid AccountTransferForm form){
 			
 		Account sourceAccount = form.convertSource(userRepository, accountRepository);
-		
-		Account destinationAccount = form.convertSource(userRepository, accountRepository);
+
+		Account destinationAccount = form.convertDestination(userRepository, accountRepository);
 		
 		return ResponseEntity.ok(new AccountTransferDto(form, userRepository));
 	}

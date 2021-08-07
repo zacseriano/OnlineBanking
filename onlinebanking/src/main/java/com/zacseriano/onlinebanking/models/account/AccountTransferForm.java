@@ -72,7 +72,8 @@ public class AccountTransferForm {
 			throw new UnauthorizedUserException();
 		
 		BigDecimal zero = new BigDecimal("0");
-		if(sourceAccount.getBalance().compareTo(zero) == -1) 
+		BigDecimal subTest = sourceAccount.getBalance().subtract(this.amount);
+		if(subTest.compareTo(zero) == -1) 
 			throw new NegativeSourceBalanceException();
 		
 		sourceAccount.setBalance(sourceAccount.getBalance().subtract(this.amount));		
