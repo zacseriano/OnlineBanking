@@ -13,10 +13,12 @@ import org.springframework.web.bind.annotation.RestController;
 import com.zacseriano.onlinebanking.models.account.Account;
 import com.zacseriano.onlinebanking.models.account.AccountBalanceForm;
 import com.zacseriano.onlinebanking.models.account.AccountForm;
+import com.zacseriano.onlinebanking.models.account.AccountTransferForm;
 import com.zacseriano.onlinebanking.repositories.AccountRepository;
 import com.zacseriano.onlinebanking.repositories.UserRepository;
 import com.zacseriano.onlinebanking.resources.dto.AccountBalanceDto;
 import com.zacseriano.onlinebanking.resources.dto.AccountDto;
+import com.zacseriano.onlinebanking.resources.dto.AccountTransferDto;
 
 @RestController
 @RequestMapping(value="/account")
@@ -58,6 +60,18 @@ public class AccountResource {
 		Account account = form.converter(userRepository, accountRepository);
 		
 		return ResponseEntity.ok(new AccountBalanceDto(account));
+	}
+	
+	@PostMapping("/transfer")
+	@Transactional
+	@SuppressWarnings("unused")
+	public ResponseEntity<AccountTransferDto> transfer(@RequestBody @Valid AccountTransferForm form){
+			
+		Account sourceAccount = form.convertSource(userRepository, accountRepository);
+		
+		Account destinationAccount = form.convertSource(userRepository, accountRepository);
+		
+		return ResponseEntity.ok(new AccountTransferDto(form, userRepository));
 	}
 
 }

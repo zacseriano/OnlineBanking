@@ -28,26 +28,21 @@ public class AccountForm {
 		return number;
 	}
 
-
 	public void setNumber(String number) {
 		this.number = number;
 	}
-
 
 	public BigDecimal getBalance() {
 		return balance;
 	}
 
-
 	public void setBalance(BigDecimal balance) {
 		this.balance = balance;
 	}
 
-
 	public String getUserEmail() {
 		return userEmail;
 	}
-
 
 	public void setUserEmail(String userEmail) {
 		this.userEmail = userEmail;
