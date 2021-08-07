@@ -44,6 +44,13 @@ public class User implements UserDetails{
 	public User() {
 		
 	}
+	
+	public User(@Email String email, @NotBlank @Size(min = 6) String password,
+			@NotBlank @Size(min = 4, max = 20) String name) {
+		this.email = email;
+		this.password = password;
+		this.name = name;
+	}
 
 	public String getEmail() {
 		return email;

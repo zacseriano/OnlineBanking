@@ -19,6 +19,16 @@ public class AuthForm {
 	
 	@NotNull(message="A password não pode estar vazia.")
 	private String password;
+	
+	public AuthForm(@NotNull(message = "O email não pode estar vazio.") String email,
+			@NotNull(message = "A password não pode estar vazia.") String password) {
+		this.email = email;
+		this.password = password;
+	}
+	
+	public AuthForm() {
+		
+	}
 
 	public String getEmail() {
 		return email;
