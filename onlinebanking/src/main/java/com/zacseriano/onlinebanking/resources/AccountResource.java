@@ -11,9 +11,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.zacseriano.onlinebanking.models.account.Account;
+import com.zacseriano.onlinebanking.models.account.AccountBalanceForm;
 import com.zacseriano.onlinebanking.models.account.AccountForm;
 import com.zacseriano.onlinebanking.repositories.AccountRepository;
 import com.zacseriano.onlinebanking.repositories.UserRepository;
+import com.zacseriano.onlinebanking.resources.dto.AccountBalanceDto;
 import com.zacseriano.onlinebanking.resources.dto.AccountDto;
 
 @RestController
@@ -48,6 +50,14 @@ public class AccountResource {
 		
 		return ResponseEntity.created(null).body(new AccountDto(account));
 				
+	}
+	
+	@PostMapping("/balance")
+	public ResponseEntity<AccountBalanceDto> showBalance(@RequestBody @Valid AccountBalanceForm form){
+		
+		Account account = form.converter(userRepository, accountRepository);
+		
+		return ResponseEntity.ok(new AccountBalanceDto(account));
 	}
 
 }
