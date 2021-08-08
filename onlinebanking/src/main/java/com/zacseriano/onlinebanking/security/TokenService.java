@@ -10,6 +10,9 @@ import com.zacseriano.onlinebanking.models.user.User;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 
+/*
+ * Classe que configura o service de criação de token com o Jwts.builder()
+ */
 @Service
 public class TokenService {
 	

@@ -1,6 +1,5 @@
 package com.zacseriano.onlinebanking;
 
-import org.junit.Assert;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -12,7 +11,6 @@ class OnlinebankingApplicationTests {
 
 	@Test
 	void contextLoads() {
-		Assert.assertTrue(true);
 	}
 
 }

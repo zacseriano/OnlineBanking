@@ -2,6 +2,7 @@ package com.zacseriano.onlinebanking.security;
 
 import java.util.Date;
 
+import org.springframework.context.annotation.Profile;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
@@ -10,6 +11,7 @@ import com.zacseriano.onlinebanking.models.user.UserTest;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 
+@Profile(value="test")
 @Service
 public class TokenServiceTest {
 	

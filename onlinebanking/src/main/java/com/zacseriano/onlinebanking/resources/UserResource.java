@@ -13,10 +13,14 @@ import com.zacseriano.onlinebanking.models.user.User;
 import com.zacseriano.onlinebanking.repositories.UserRepository;
 import com.zacseriano.onlinebanking.resources.dto.UserDto;
 
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+
 /**
- * SpringBoot RestController que implementa o end-point de criação de usuário da API
+ * SpringBoot RestController que implementa o endpoint de criação de usuário da API
  */  
 @RestController
+@Api(value="Cadastro de Usuários.")
 public class UserResource {
 	
 	@Autowired
@@ -35,6 +39,7 @@ public class UserResource {
 	 * 500, 502, 503, 504 - Erros de server: problemas na Java API
 	 */
 	@PostMapping(value="/users")
+	@ApiOperation(value="Registra um usuário no banco de dados.")
 	public ResponseEntity<UserDto> registerUser(@RequestBody @Valid User user) {
 		if(userRepository.findByEmail(user.getEmail()) != null) throw new ExistingUserException();
 		

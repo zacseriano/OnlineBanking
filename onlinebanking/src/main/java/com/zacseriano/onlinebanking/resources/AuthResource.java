@@ -17,10 +17,14 @@ import com.zacseriano.onlinebanking.security.ImplementsUserDetailsService;
 import com.zacseriano.onlinebanking.security.TokenDto;
 import com.zacseriano.onlinebanking.security.TokenService;
 
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+
 /**
  * SpringBoot RestController que implementa os end-points de autenticação/autorização da API
  */  
 @RestController
+@Api(value="Autorização/Atenticação em JWT.")
 public class AuthResource {
 	
 	@Autowired
@@ -36,7 +40,7 @@ public class AuthResource {
 	private TokenService tokenService;
 	
 	/**
-	 * Método que gera tokens válidos de JWT para autorização de Clientes/Gestor na API
+	 * Método que gera tokens válidos de JWT para autorização de Usuários na API
 	 * 
 	 * HTTP Status:
 	 * 
@@ -48,6 +52,7 @@ public class AuthResource {
 	 * 500, 502, 503, 504 - Erros de server: problemas na Java API
 	 */
 	@PostMapping(value = "/auth")
+	@ApiOperation(value="Valida as credenciais e informa um Token JWT válido para autorização na API.")
 	public ResponseEntity<?> createAuthenticationToken(@RequestBody AuthForm form){
 		UsernamePasswordAuthenticationToken loginData = form.converter();
 		
