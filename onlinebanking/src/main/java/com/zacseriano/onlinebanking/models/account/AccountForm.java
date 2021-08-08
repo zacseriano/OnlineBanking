@@ -2,12 +2,13 @@ package com.zacseriano.onlinebanking.models.account;
 
 import java.math.BigDecimal;
 
-import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
+
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import com.zacseriano.onlinebanking.exceptions.account.ExistingAccountException;
 import com.zacseriano.onlinebanking.exceptions.account.NegativeBalanceException;
-import com.zacseriano.onlinebanking.exceptions.user.UserNotFoundException;
 import com.zacseriano.onlinebanking.models.user.User;
 import com.zacseriano.onlinebanking.repositories.AccountRepository;
 import com.zacseriano.onlinebanking.repositories.UserRepository;
@@ -18,11 +19,7 @@ public class AccountForm {
 	private String number;
 	
 	@NotNull
-	private BigDecimal balance;
-	
-	@Email
-	private String userEmail;
-	
+	private BigDecimal balance;	
 	
 	public String getNumber() {
 		return number;
@@ -40,18 +37,12 @@ public class AccountForm {
 		this.balance = balance;
 	}
 
-	public String getUserEmail() {
-		return userEmail;
-	}
-
-	public void setUserEmail(String userEmail) {
-		this.userEmail = userEmail;
-	}
-
 	public Account converter(UserRepository userRepository, AccountRepository accountRepository) {
 		
-		User user = userRepository.findByEmail(userEmail);
-		if(user == null) throw new UserNotFoundException();
+		UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication()
+                .getPrincipal();
+		String email = userDetails.getUsername();
+		User user = userRepository.findByEmail(email);
 		
 		Account account = accountRepository.findByNumber(this.number);
 		if(account != null) throw new ExistingAccountException();

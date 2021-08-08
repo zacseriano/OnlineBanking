@@ -2,7 +2,11 @@ package com.zacseriano.onlinebanking.resources.dto;
 
 import java.math.BigDecimal;
 
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
+
 import com.zacseriano.onlinebanking.models.account.AccountTransferForm;
+import com.zacseriano.onlinebanking.models.user.User;
 import com.zacseriano.onlinebanking.repositories.UserRepository;
 
 public class AccountTransferDto {
@@ -12,12 +16,17 @@ public class AccountTransferDto {
 	private String destination_account_number;
 	private UserDto user_transfer;
 	
-	public AccountTransferDto(AccountTransferForm form, UserRepository repository) {
+	public AccountTransferDto(UserRepository repository, AccountTransferForm form) {
+		
+		UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication()
+                .getPrincipal();
+		String email = userDetails.getUsername();
+		User user = repository.findByEmail(email);
 		
 		this.amount = form.getAmount();
 		this.source_account_number = form.getSource_account_number();
 		this.destination_account_number = form.getDestination_account_number();
-		this.user_transfer = new UserDto(repository.findByEmail(form.getUserEmail()));
+		this.user_transfer = new UserDto(user);
 	}
 
 	public String getSource_account_number() {

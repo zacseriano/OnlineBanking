@@ -148,7 +148,7 @@ public class AccountResourceTest {
 	@Test
 	public void shouldReturn400AtUserNotFoundAtAccountCreation() throws Exception {
 		URI uri = new URI("/account");
-		String json = "{\"number\":\"1111-1\",\"balance\":\"-10\",\"userEmail\":\"invalid@email.com\"}";
+		String json = "{\"number\":\"1111-1\",\"balance\":\"-10\"}";
 		
 		AuthForm form = new AuthForm(EMAIL, PASSWORD);
 		
@@ -160,8 +160,7 @@ public class AccountResourceTest {
 				.contentType(MediaType.APPLICATION_JSON))
 		.andExpect(MockMvcResultMatchers
 				.status()
-				.is(400))
-		.andExpect(result -> assertTrue(result.getResolvedException() instanceof UserNotFoundException));
+				.is(400));
 	}
 	
 	@Test

@@ -2,14 +2,15 @@ package com.zacseriano.onlinebanking.models.account;
 
 import java.math.BigDecimal;
 
-import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
+
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import com.zacseriano.onlinebanking.exceptions.account.DestinationAccountNotFoundException;
 import com.zacseriano.onlinebanking.exceptions.account.NegativeSourceBalanceException;
 import com.zacseriano.onlinebanking.exceptions.account.SourceAccountNotFoundException;
 import com.zacseriano.onlinebanking.exceptions.user.UnauthorizedUserException;
-import com.zacseriano.onlinebanking.exceptions.user.UserNotFoundException;
 import com.zacseriano.onlinebanking.models.user.User;
 import com.zacseriano.onlinebanking.repositories.AccountRepository;
 import com.zacseriano.onlinebanking.repositories.UserRepository;
@@ -24,9 +25,6 @@ public class AccountTransferForm {
 	
 	@NotNull 
 	private BigDecimal amount;
-	
-	@Email
-	private String userEmail;
 			
 	public String getSource_account_number() {
 		return source_account_number;
@@ -52,18 +50,12 @@ public class AccountTransferForm {
 		this.amount = amount;
 	}
 
-	public String getUserEmail() {
-		return userEmail;
-	}
-
-	public void setUserEmail(String userEmail) {
-		this.userEmail = userEmail;
-	}
-
 	public Account convertSource(UserRepository userRepository, AccountRepository accountRepository) {
 		
-		User user = userRepository.findByEmail(this.userEmail);
-		if(user == null) throw new UserNotFoundException();
+		UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication()
+                .getPrincipal();
+		String email = userDetails.getUsername();
+		User user = userRepository.findByEmail(email);
 		
 		Account sourceAccount = accountRepository.findByNumber(this.source_account_number);
 		if(sourceAccount == null) throw new SourceAccountNotFoundException();

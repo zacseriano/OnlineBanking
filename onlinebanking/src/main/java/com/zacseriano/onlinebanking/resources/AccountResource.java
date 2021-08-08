@@ -104,12 +104,12 @@ public class AccountResource {
 	@SuppressWarnings("unused")
 	@ApiOperation(value="Executa uma transferência entre contas.")
 	public ResponseEntity<AccountTransferDto> transfer(@RequestBody @Valid AccountTransferForm form){
-			
+		
 		Account sourceAccount = form.convertSource(userRepository, accountRepository);
 
 		Account destinationAccount = form.convertDestination(userRepository, accountRepository);
 		
-		return ResponseEntity.ok(new AccountTransferDto(form, userRepository));
+		return ResponseEntity.ok(new AccountTransferDto(userRepository, form));
 	}
 
 }
