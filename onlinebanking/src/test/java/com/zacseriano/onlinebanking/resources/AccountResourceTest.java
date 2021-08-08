@@ -63,7 +63,7 @@ public class AccountResourceTest {
 	static final String ALTERNATE_NAME = "Dohn Joe";
 	static final String NUMBER = "1234-5";
 	static final String ALTERNATE_NUMBER = "7777-7";
-	static final BigDecimal HUND = new BigDecimal("100");
+	static final BigDecimal HUNDRED = new BigDecimal("100");
 	
 	@Autowired
 	private MockMvc mockMvc;
@@ -82,12 +82,17 @@ public class AccountResourceTest {
 	
 	@MockBean
 	private AccountRepository accRepository;
-	
+	/*
+	 * Antes da execução do teste, algumas configurações são executadas pra simular
+	 * o funcionamento real da API, cadastrando dois usuários diferentes para duas
+	 * contas diferentes, afim de testar várias possibilidades no funcionamento da API.
+	 * Essas configurações prévias são sinalizadas pela anotação @Before.
+	 */
 	@Before
 	public void setup() throws UsernameNotFoundException, ParseException {
 		
 		BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
-		String password = encoder.encode("123456");
+		String password = encoder.encode(PASSWORD);
 			
 		User user = new User(EMAIL, password, NAME);		
 		Mockito.when(userRepository.findByEmail(user.getEmail()))
@@ -97,18 +102,25 @@ public class AccountResourceTest {
 		Mockito.when(userRepository.findByEmail(alternateUser.getEmail()))
 		.thenReturn(alternateUser);
 		
-		Account account = new Account(NUMBER, HUND, user);		
+		Account account = new Account(NUMBER, HUNDRED, user);		
 		Mockito.when(accRepository.findByNumber(account.getNumber()))
 		.thenReturn(account);
 		
-		Account alternateAccount = new Account(ALTERNATE_NUMBER, HUND, alternateUser);		
+		Account alternateAccount = new Account(ALTERNATE_NUMBER, HUNDRED, alternateUser);		
 		Mockito.when(accRepository.findByNumber(alternateAccount.getNumber()))
 		.thenReturn(alternateAccount);
-		
+		/*
+		 * Mockito que será usado junto do MockMvc em vários testes com a finalidade 
+		 * de gerar um JWT para as credenciais do User que é cadastrado nas 
+		 * configurações que rodam antes do funcionamento do teste, 
+		 * sinalizados pela anotação @Before.
+		 */
 		BDDMockito.given(userDetailsService.loadUserByUsername(Mockito.any(String.class)))
 		.willReturn(getMockUserTest());
 	}
-	
+	/*
+	 * Testa uma criação de conta com dados válidos
+	 */
 	@Test
 	public void shouldReturn201AtAccountCreation() throws Exception {
 		URI uri = new URI("/account");
@@ -126,7 +138,9 @@ public class AccountResourceTest {
 				.status()
 				.is(201));
 	}
-	
+	/*
+	 * Testa uma criação de conta com saldo negativo
+	 */
 	@Test
 	public void shouldReturn400AtNegativeAccountBalanceCreation() throws Exception {
 		URI uri = new URI("/account");
@@ -145,9 +159,11 @@ public class AccountResourceTest {
 				.is(400))
 		.andExpect(result -> assertTrue(result.getResolvedException() instanceof NegativeBalanceException));
 	}
-	
+	/*
+	 * Testa uma criação de conta com saldo negativo
+	 */
 	@Test
-	public void shouldReturn400AtUserNotFoundAtAccountCreation() throws Exception {
+	public void shouldReturn400AtNegativeBalanceAccountCreation() throws Exception {
 		URI uri = new URI("/account");
 		String json = "{\"number\":\"1111-1\",\"balance\":\"-10\"}";
 		
@@ -161,9 +177,12 @@ public class AccountResourceTest {
 				.contentType(MediaType.APPLICATION_JSON))
 		.andExpect(MockMvcResultMatchers
 				.status()
-				.is(400));
+				.is(400))
+		.andExpect(result -> assertTrue(result.getResolvedException() instanceof NegativeBalanceException));
 	}
-	
+	/*
+	 * Testa uma consulta de saldo válida
+	 */
 	@Test
 	public void shouldReturn200AtAccountBalance() throws Exception {
 		
@@ -182,7 +201,9 @@ public class AccountResourceTest {
 				.status()
 				.is(200));		
 	}
-	
+	/*
+	 * Testa uma consulta de saldo inválida
+	 */
 	@Test
 	public void shouldReturn400AtAccountNotFoundAtAccountBalance() throws Exception {
 		
@@ -202,7 +223,9 @@ public class AccountResourceTest {
 				.is(400))
 		.andExpect(result -> assertTrue(result.getResolvedException() instanceof AccountNotFoundException));		
 	}
-	
+	/*
+	 * Testa uma consulta de saldo por um usuário que não é o dono da conta
+	 */
 	@Test
 	public void shouldReturn400AtUnauthorizedUserAtAccountBalance() throws Exception {
 		
@@ -222,7 +245,9 @@ public class AccountResourceTest {
 				.is(400))
 		.andExpect(result -> assertTrue(result.getResolvedException() instanceof UnauthorizedUserException));		
 	}
-	
+	/*
+	 * Testa uma transferência válida
+	 */
 	@Test
 	public void shouldReturn200AtAccountTransfer() throws Exception {
 		
@@ -242,7 +267,61 @@ public class AccountResourceTest {
 				.status()
 				.is(200));		
 	}
-	
+	/*
+	 * Testa se o saldo da conta de origem foi subtraído em uma transferência válida
+	 */
+	@Test
+	public void shouldSubtractSourceAccountBalanceAtSucessfulTransfer() throws Exception {
+		
+		URI uri = new URI("/account/transfer");
+		String json = "{\"amount\":\"90.00\",\"source_account_number\":"
+				+ " \"1234-5\", \"destination_account_number\": \"7777-7\"}";
+		
+		BigDecimal previousBalance = accRepository.findByNumber("1234-5").getBalance();
+		
+		AuthForm form = new AuthForm(EMAIL, PASSWORD);
+		
+		mockMvc
+		.perform(MockMvcRequestBuilders
+				.post(uri)
+				.header("Authorization", "Bearer " + createAuthenticationToken(form))
+				.content(json)
+				.contentType(MediaType.APPLICATION_JSON))
+		.andExpect(MockMvcResultMatchers
+				.status()
+				.is(200))
+		.andExpect(result -> assertTrue(-1 == accRepository.findByNumber(NUMBER).getBalance()
+				.compareTo(previousBalance)));		
+	}
+	/*
+	 * Testa se o saldo da conta de destino sofreu acréscimo em uma transferência válida
+	 */
+	@Test
+	public void shouldAddDestinationAccountBalanceAtSucessfulTransfer() throws Exception {
+		
+		URI uri = new URI("/account/transfer");
+		String json = "{\"amount\":\"90.00\",\"source_account_number\":"
+				+ " \"1234-5\", \"destination_account_number\": \"7777-7\"}";
+		
+		BigDecimal previousBalance = accRepository.findByNumber(ALTERNATE_NUMBER).getBalance();
+		
+		AuthForm form = new AuthForm(EMAIL, PASSWORD);		
+		
+		mockMvc
+		.perform(MockMvcRequestBuilders
+				.post(uri)
+				.header("Authorization", "Bearer " + createAuthenticationToken(form))
+				.content(json)
+				.contentType(MediaType.APPLICATION_JSON))
+		.andExpect(MockMvcResultMatchers
+				.status()
+				.is(200))
+		.andExpect(result -> assertTrue(1 == accRepository.findByNumber(ALTERNATE_NUMBER)
+				.getBalance().compareTo(previousBalance)));		
+	}
+	/*
+	 * Testa uma transferência feita por um usuário que não é dono da conta de origem
+	 */
 	@Test
 	public void shouldReturn400AtUnauthorizedUserAtTransfer() throws Exception {
 		
@@ -264,7 +343,9 @@ public class AccountResourceTest {
 		.andExpect(result -> assertTrue(result.getResolvedException() instanceof UnauthorizedUserException));		
 		
 	}
-	
+	/*
+	 * Testa uma transferência que deixará a conta de origem com saldo negativo
+	 */
 	@Test
 	public void shouldReturn400AtNegativeSourceBalanceTransfer() throws Exception {
 		
@@ -286,7 +367,9 @@ public class AccountResourceTest {
 		.andExpect(result -> assertTrue(result.getResolvedException() instanceof NegativeSourceBalanceException));		
 		
 	}
-	
+	/*
+	 * Testa uma transferência que não encontra uma conta de origem
+	 */
 	@Test
 	public void shouldReturn400AtSourceAccountNotFoundTransfer() throws Exception {
 		
@@ -308,7 +391,9 @@ public class AccountResourceTest {
 		.andExpect(result -> assertTrue(result.getResolvedException() instanceof SourceAccountNotFoundException));		
 		
 	}
-	
+	/*
+	 * Testa uma transferência que não encontra uma conta de destino
+	 */
 	@Test
 	public void shouldReturn400AtDestinationAccountNotFoundTransfer() throws Exception {
 		
@@ -330,7 +415,9 @@ public class AccountResourceTest {
 		.andExpect(result -> assertTrue(result.getResolvedException() instanceof DestinationAccountNotFoundException));		
 		
 	}
-	
+	/*
+	 * Método utilizado para gerar um JWT válido para este ambiente de testes
+	 */
 	public String createAuthenticationToken(AuthForm form){
 		
 		UsernamePasswordAuthenticationToken loginData = form.converter();
@@ -344,11 +431,13 @@ public class AccountResourceTest {
 		return token;
 
 	}
-	
+	/*
+	 * Método utilizado para criar um usuário teste e posteriormente gerar um token JWT
+	 */
 	private UserTest getMockUserTest() throws ParseException {
 	
 		BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
-		String password = encoder.encode("123456");
+		String password = encoder.encode(PASSWORD);
 
 		User user = new User(EMAIL, password, NAME);
 		return UserTestFactory.create(user);
