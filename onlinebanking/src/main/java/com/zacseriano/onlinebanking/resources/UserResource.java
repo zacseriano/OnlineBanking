@@ -4,6 +4,7 @@ import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -13,14 +14,12 @@ import com.zacseriano.onlinebanking.models.user.User;
 import com.zacseriano.onlinebanking.repositories.UserRepository;
 import com.zacseriano.onlinebanking.resources.dto.UserDto;
 
-import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 
 /**
  * SpringBoot RestController que implementa o endpoint de criação de usuário da API
  */  
 @RestController
-@Api(value="Cadastro de Usuários.")
 public class UserResource {
 	
 	@Autowired
@@ -42,7 +41,8 @@ public class UserResource {
 	@ApiOperation(value="Registra um usuário no banco de dados.")
 	public ResponseEntity<UserDto> registerUser(@RequestBody @Valid User user) {
 		if(userRepository.findByEmail(user.getEmail()) != null) throw new ExistingUserException();
-		
+
+		user.setPassword(new BCryptPasswordEncoder().encode(user.getPassword()));
 		userRepository.save(user);
 		
 		return ResponseEntity.created(null).body(new UserDto(user));	

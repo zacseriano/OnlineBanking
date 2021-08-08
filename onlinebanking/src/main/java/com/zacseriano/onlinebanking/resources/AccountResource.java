@@ -20,14 +20,12 @@ import com.zacseriano.onlinebanking.resources.dto.AccountBalanceDto;
 import com.zacseriano.onlinebanking.resources.dto.AccountDto;
 import com.zacseriano.onlinebanking.resources.dto.AccountTransferDto;
 
-import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 /**
  * SpringBoot RestController que implementa os endpoints de operações envolvendo contas
  */  
 @RestController
 @RequestMapping(value="/account")
-@Api(value="Operações em Contas.")
 public class AccountResource {
 	
 	@Autowired

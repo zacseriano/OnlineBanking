@@ -16,8 +16,6 @@ import javax.validation.constraints.Size;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-
 import com.zacseriano.onlinebanking.models.account.Account;
 
 /**
@@ -29,10 +27,10 @@ public class User implements UserDetails{
 
 	private static final long serialVersionUID = 1L;
 
-	@Id @Email
+	@Id @Email @NotBlank
 	private String email;
 	
-	@NotBlank @Size(min = 6)
+	@NotBlank @Size(min = 6, max = 100)
 	private String password;
 	
 	@NotBlank @Size(min = 4, max = 20)
@@ -45,7 +43,7 @@ public class User implements UserDetails{
 		
 	}
 	
-	public User(@Email String email, @NotBlank @Size(min = 6) String password,
+	public User(@Email String email, @NotBlank @Size(min = 6,  max = 30) String password,
 			@NotBlank @Size(min = 4, max = 20) String name) {
 		this.email = email;
 		this.password = password;
@@ -65,7 +63,7 @@ public class User implements UserDetails{
 	}
 
 	public void setPassword(String password) {
-		this.password = new BCryptPasswordEncoder().encode(password);
+		this.password = password;
 	}
 
 	public String getName() {
@@ -134,6 +132,6 @@ public class User implements UserDetails{
 	@Override
 	public boolean isEnabled() {
 		return true;
-	}		
+	}
 	
 }

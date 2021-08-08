@@ -17,14 +17,12 @@ import com.zacseriano.onlinebanking.security.ImplementsUserDetailsService;
 import com.zacseriano.onlinebanking.security.TokenDto;
 import com.zacseriano.onlinebanking.security.TokenService;
 
-import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 
 /**
  * SpringBoot RestController que implementa os end-points de autenticação/autorização da API
  */  
 @RestController
-@Api(value="Autorização/Atenticação em JWT.")
 public class AuthResource {
 	
 	@Autowired
