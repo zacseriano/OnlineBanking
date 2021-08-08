@@ -1,5 +1,7 @@
 package com.zacseriano.onlinebanking.exceptions.handler;
-
+/*
+ * DTO usado nos Handlers de Exceção
+ */
 public class ErrorDto {
 
 	private String message;

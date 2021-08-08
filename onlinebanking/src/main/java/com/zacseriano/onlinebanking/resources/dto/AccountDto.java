@@ -3,7 +3,10 @@ package com.zacseriano.onlinebanking.resources.dto;
 import java.math.BigDecimal;
 
 import com.zacseriano.onlinebanking.models.account.Account;
-
+/*
+ * Classe de DTO usado para representar uma conta no método createAccount() do AccountResource
+ * na criação de uma conta.
+ */
 public class AccountDto {
 	
 	private String number;

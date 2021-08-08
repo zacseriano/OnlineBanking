@@ -10,7 +10,10 @@ import com.zacseriano.onlinebanking.exceptions.user.UnauthorizedUserException;
 import com.zacseriano.onlinebanking.models.user.User;
 import com.zacseriano.onlinebanking.repositories.AccountRepository;
 import com.zacseriano.onlinebanking.repositories.UserRepository;
-
+/*
+ * Classe do formulário que será usado no método showBalance(), responsável
+ * por mostrar o saldo de uma conta.
+ */
 public class AccountBalanceForm {
 	
 	@NotNull

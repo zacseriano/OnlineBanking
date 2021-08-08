@@ -46,7 +46,9 @@ import com.zacseriano.onlinebanking.models.user.User;
 import com.zacseriano.onlinebanking.models.user.UserTest;
 import com.zacseriano.onlinebanking.models.user.UserTestFactory;
 import com.zacseriano.onlinebanking.repositories.AccountRepository;
-
+/*
+ * Classe de testes JUnit 4 responsável por testar todos os métodos do controller AccountResource
+ */
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -61,7 +63,6 @@ public class AccountResourceTest {
 	static final String ALTERNATE_NAME = "Dohn Joe";
 	static final String NUMBER = "1234-5";
 	static final String ALTERNATE_NUMBER = "7777-7";
-	static final BigDecimal ZERO = new BigDecimal("0");
 	static final BigDecimal HUND = new BigDecimal("100");
 	
 	@Autowired
@@ -96,7 +97,7 @@ public class AccountResourceTest {
 		Mockito.when(userRepository.findByEmail(alternateUser.getEmail()))
 		.thenReturn(alternateUser);
 		
-		Account account = new Account(NUMBER, ZERO, user);		
+		Account account = new Account(NUMBER, HUND, user);		
 		Mockito.when(accRepository.findByNumber(account.getNumber()))
 		.thenReturn(account);
 		
@@ -111,7 +112,7 @@ public class AccountResourceTest {
 	@Test
 	public void shouldReturn201AtAccountCreation() throws Exception {
 		URI uri = new URI("/account");
-		String json = "{\"number\":\"1111-1\",\"balance\":\"0.0\",\"userEmail\":\"valid@email.com\"}";
+		String json = "{\"number\":\"1111-1\",\"balance\":\"0.0\"}";
 		
 		AuthForm form = new AuthForm(EMAIL, PASSWORD);
 		
@@ -129,7 +130,7 @@ public class AccountResourceTest {
 	@Test
 	public void shouldReturn400AtNegativeAccountBalanceCreation() throws Exception {
 		URI uri = new URI("/account");
-		String json = "{\"number\":\"1111-1\",\"balance\":\"-10\",\"userEmail\":\"valid@email.com\"}";
+		String json = "{\"number\":\"1111-1\",\"balance\":\"-10\"}";
 		
 		AuthForm form = new AuthForm(EMAIL, PASSWORD);
 		
@@ -167,7 +168,7 @@ public class AccountResourceTest {
 	public void shouldReturn200AtAccountBalance() throws Exception {
 		
 		URI uri = new URI("/account/balance");
-		String json = "{\"number\":\"1234-5\",\"userEmail\":\"valid@email.com\"}";		
+		String json = "{\"number\":\"1234-5\"}";		
 		
 		AuthForm form = new AuthForm(EMAIL, PASSWORD);
 		
@@ -183,30 +184,10 @@ public class AccountResourceTest {
 	}
 	
 	@Test
-	public void shouldReturn400AtInvalidEmail() throws Exception {
-		
-		URI uri = new URI("/account/balance");
-		String json = "{\"number\":\"1234-5\",\"userEmail\":\"invalid@email.com\"}";		
-		
-		AuthForm form = new AuthForm(EMAIL, PASSWORD);
-		
-		mockMvc
-		.perform(MockMvcRequestBuilders
-				.post(uri)
-				.header("Authorization", "Bearer " + createAuthenticationToken(form))
-				.content(json)
-				.contentType(MediaType.APPLICATION_JSON))
-		.andExpect(MockMvcResultMatchers
-				.status()
-				.is(400))
-		.andExpect(result -> assertTrue(result.getResolvedException() instanceof UserNotFoundException));		
-	}
-	
-	@Test
 	public void shouldReturn400AtAccountNotFoundAtAccountBalance() throws Exception {
 		
 		URI uri = new URI("/account/balance");
-		String json = "{\"number\":\"3333-3\",\"userEmail\":\"valid@email.com\"}";		
+		String json = "{\"number\":\"3333-3\"}";		
 		
 		AuthForm form = new AuthForm(EMAIL, PASSWORD);
 		
@@ -223,12 +204,31 @@ public class AccountResourceTest {
 	}
 	
 	@Test
+	public void shouldReturn400AtUnauthorizedUserAtAccountBalance() throws Exception {
+		
+		URI uri = new URI("/account/balance");
+		String json = "{\"number\":\"7777-7\"}";		
+		
+		AuthForm form = new AuthForm(EMAIL, PASSWORD);
+		
+		mockMvc
+		.perform(MockMvcRequestBuilders
+				.post(uri)
+				.header("Authorization", "Bearer " + createAuthenticationToken(form))
+				.content(json)
+				.contentType(MediaType.APPLICATION_JSON))
+		.andExpect(MockMvcResultMatchers
+				.status()
+				.is(400))
+		.andExpect(result -> assertTrue(result.getResolvedException() instanceof UnauthorizedUserException));		
+	}
+	
+	@Test
 	public void shouldReturn200AtAccountTransfer() throws Exception {
 		
 		URI uri = new URI("/account/transfer");
 		String json = "{\"amount\":\"90.00\",\"source_account_number\":"
-				+ " \"7777-7\", \"destination_account_number\": \"1234-5\", "
-				+ "\"userEmail\":\"default@email.com\"}";		
+				+ " \"1234-5\", \"destination_account_number\": \"7777-7\"}";		
 		
 		AuthForm form = new AuthForm(EMAIL, PASSWORD);
 		
@@ -244,12 +244,11 @@ public class AccountResourceTest {
 	}
 	
 	@Test
-	public void shouldReturn400AtInvalidUserTransfer() throws Exception {
+	public void shouldReturn400AtUnauthorizedUserAtTransfer() throws Exception {
 		
 		URI uri = new URI("/account/transfer");
 		String json = "{\"amount\":\"90.00\",\"source_account_number\":"
-				+ " \"7777-7\", \"destination_account_number\": \"1234-5\", "
-				+ "\"userEmail\":\"valid@email.com\"}";		
+				+ " \"7777-7\", \"destination_account_number\": \"1234-5\"}";		
 		
 		AuthForm form = new AuthForm(EMAIL, PASSWORD);
 		
@@ -267,35 +266,11 @@ public class AccountResourceTest {
 	}
 	
 	@Test
-	public void shouldReturn400AtUserNotFoundTransfer() throws Exception {
-		
-		URI uri = new URI("/account/transfer");
-		String json = "{\"amount\":\"90.00\",\"source_account_number\":"
-				+ " \"7777-7\", \"destination_account_number\": \"1234-5\", "
-				+ "\"userEmail\":\"invalid@email.com\"}";		
-		
-		AuthForm form = new AuthForm(EMAIL, PASSWORD);
-		
-		mockMvc
-		.perform(MockMvcRequestBuilders
-				.post(uri)
-				.header("Authorization", "Bearer " + createAuthenticationToken(form))
-				.content(json)
-				.contentType(MediaType.APPLICATION_JSON))
-		.andExpect(MockMvcResultMatchers
-				.status()
-				.is(400))
-		.andExpect(result -> assertTrue(result.getResolvedException() instanceof UserNotFoundException));		
-		
-	}
-	
-	@Test
 	public void shouldReturn400AtNegativeSourceBalanceTransfer() throws Exception {
 		
 		URI uri = new URI("/account/transfer");
 		String json = "{\"amount\":\"500.00\",\"source_account_number\":"
-				+ " \"7777-7\", \"destination_account_number\": \"1234-5\", "
-				+ "\"userEmail\":\"default@email.com\"}";		
+				+ " \"1234-5\", \"destination_account_number\": \"7777-7\"}";		
 		
 		AuthForm form = new AuthForm(EMAIL, PASSWORD);
 		
@@ -317,8 +292,7 @@ public class AccountResourceTest {
 		
 		URI uri = new URI("/account/transfer");
 		String json = "{\"amount\":\"90.00\",\"source_account_number\":"
-				+ " \"3333-3\", \"destination_account_number\": \"1234-5\", "
-				+ "\"userEmail\":\"default@email.com\"}";		
+				+ " \"3333-3\", \"destination_account_number\": \"1234-5\"}";		
 		
 		AuthForm form = new AuthForm(EMAIL, PASSWORD);
 		
@@ -340,8 +314,7 @@ public class AccountResourceTest {
 		
 		URI uri = new URI("/account/transfer");
 		String json = "{\"amount\":\"90.00\",\"source_account_number\":"
-				+ " \"7777-7\", \"destination_account_number\": \"3333-3\", "
-				+ "\"userEmail\":\"default@email.com\"}";		
+				+ " \"1234-5\", \"destination_account_number\": \"3333-3\"}";		
 		
 		AuthForm form = new AuthForm(EMAIL, PASSWORD);
 		

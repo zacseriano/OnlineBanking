@@ -1,7 +1,9 @@
 package com.zacseriano.onlinebanking.security;
 
 import java.io.Serializable;
-
+/*
+ * Classe usada na geração de JWT
+ */
 @SuppressWarnings("serial")
 public class AuthenticationResponse implements Serializable {
 

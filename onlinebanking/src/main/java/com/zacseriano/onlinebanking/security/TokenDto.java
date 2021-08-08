@@ -1,5 +1,7 @@
 package com.zacseriano.onlinebanking.security;
-
+/*
+ * Classe DTO usada na geração de um token JWT
+ */
 public class TokenDto {
 
 	private String token;

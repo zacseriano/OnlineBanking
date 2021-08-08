@@ -37,7 +37,7 @@ public class AccountResource {
 	AccountRepository accountRepository;
 	
 	/**
-	 * Método que cria uma conta vinculada ao Id do Usuário, identificado pelo email, o saldo
+	 * Método que cria uma conta vinculada ao usuário logado, o saldo
 	 * deve ser positivo e o número da conta tem de ser único.
 	 * 
 	 * HTTP Status:
@@ -61,8 +61,8 @@ public class AccountResource {
 				
 	}
 	/**
-	 * Método que mostra o saldo de uma conta vinculada a um email informado, ocorrem 
-	 * verificações de existência do usuário e da conta e se o usuário é realmente o 
+	 * Método que mostra o saldo de uma conta vinculada a um usuário logado, ocorrem 
+	 * verificações de existência da conta e se o usuário é realmente o 
 	 * responsável pela conta. Retorna o saldo caso tudo esteja em conformidade.
 	 * 
 	 * HTTP Status:

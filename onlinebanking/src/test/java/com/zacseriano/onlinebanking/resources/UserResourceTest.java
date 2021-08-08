@@ -25,7 +25,9 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import com.zacseriano.onlinebanking.exceptions.user.ExistingUserException;
 import com.zacseriano.onlinebanking.models.user.User;
 import com.zacseriano.onlinebanking.repositories.UserRepository;
-
+/*
+ * Classe de testes JUnit 4 responsável por testar todos os métodos do controller UserResource
+ */
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @AutoConfigureMockMvc

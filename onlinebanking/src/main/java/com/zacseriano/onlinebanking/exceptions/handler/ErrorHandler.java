@@ -14,8 +14,10 @@ import com.zacseriano.onlinebanking.exceptions.account.SourceAccountNotFoundExce
 import com.zacseriano.onlinebanking.exceptions.user.ExistingUserException;
 import com.zacseriano.onlinebanking.exceptions.user.UnauthorizedUserException;
 import com.zacseriano.onlinebanking.exceptions.user.UserNotFoundException;
-
-
+/*
+ * Handler que trata as exceções gerais da API usando as classes do pacote 
+ * exceptions.handler devolvendo uma mensagem ao invés da stack trace completa.
+ */
 @RestControllerAdvice
 public class ErrorHandler {
 	

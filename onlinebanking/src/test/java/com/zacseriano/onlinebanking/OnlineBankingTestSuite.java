@@ -9,7 +9,10 @@ import com.zacseriano.onlinebanking.repositories.UserRepositoryTest;
 import com.zacseriano.onlinebanking.resources.AccountResourceTest;
 import com.zacseriano.onlinebanking.resources.AuthResourceTest;
 import com.zacseriano.onlinebanking.resources.UserResourceTest;
-
+/*
+ * Classe JUnit 4 de Suite de Testes que concentra todos os testes unitários
+ * da API
+ */
 @RunWith(Suite.class)
 @SuiteClasses({ AccountRepositoryTest.class, UserRepositoryTest.class, AccountResourceTest.class, 
 	AuthResourceTest.class, UserResourceTest.class})

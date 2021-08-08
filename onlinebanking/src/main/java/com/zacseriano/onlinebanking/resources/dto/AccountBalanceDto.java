@@ -3,7 +3,10 @@ package com.zacseriano.onlinebanking.resources.dto;
 import java.math.BigDecimal;
 
 import com.zacseriano.onlinebanking.models.account.Account;
-
+/*
+ * Classe de DTO usado para representar uma conta no método showTransfer() do AccountResource
+ * na consulta de saldo
+ */
 public class AccountBalanceDto {
 	
 	private String number;

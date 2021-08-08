@@ -5,7 +5,9 @@ import java.util.List;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-
+/*
+ * Classe utilizada no ambiente de testes para simular a geração de um token JWT
+ */
 public class UserTestFactory {
 
 	public static UserTest create(User user) {

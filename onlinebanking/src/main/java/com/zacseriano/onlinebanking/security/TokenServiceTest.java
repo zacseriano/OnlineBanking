@@ -10,7 +10,9 @@ import com.zacseriano.onlinebanking.models.user.UserTest;
 
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
-
+/*
+ * TokenService utilizado no ambiente de testes para gerar um JWT para um UserTest.
+ */
 @Profile(value="test")
 @Service
 public class TokenServiceTest {

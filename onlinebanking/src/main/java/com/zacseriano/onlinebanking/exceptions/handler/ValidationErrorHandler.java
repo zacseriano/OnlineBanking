@@ -12,7 +12,10 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-
+/*
+ * Handler que trata as exceções de erro de formulário usando as classes do pacote 
+ * exceptions.handler devolvendo uma mensagem ao invés da stack trace completa.
+ */
 @RestControllerAdvice
 public class ValidationErrorHandler {
 	

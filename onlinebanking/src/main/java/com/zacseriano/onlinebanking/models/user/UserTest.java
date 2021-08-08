@@ -4,7 +4,9 @@ import java.util.Collection;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-
+/*
+ * Classe utilizada no ambiente de testes para simular a geração de um token JWT
+ */
 public class UserTest implements UserDetails {
 
 	private static final long serialVersionUID = -8328911063439191378L;

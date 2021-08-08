@@ -2,7 +2,9 @@ package com.zacseriano.onlinebanking.exceptions.account;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
-
+/*
+ * Classe que implementa a exceção que é disparada quando o número de conta não encontra resultados
+ */
 @ResponseStatus(value= HttpStatus.BAD_REQUEST, reason="Conta inexistente com este número informado.")  // 404
 public class AccountNotFoundException extends RuntimeException {
 	private static final long serialVersionUID = 6648725043534411041L;

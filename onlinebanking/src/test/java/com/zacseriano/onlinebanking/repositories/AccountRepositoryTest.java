@@ -13,7 +13,9 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import com.zacseriano.onlinebanking.models.account.Account;
 import com.zacseriano.onlinebanking.models.user.User;
-
+/*
+ * Classe de testes JUnit 4 responsável por testar o repositório de contas da API
+ */
 @RunWith(SpringRunner.class)
 @DataJpaTest
 @ActiveProfiles("test")

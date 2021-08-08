@@ -12,7 +12,10 @@ import com.zacseriano.onlinebanking.exceptions.account.NegativeBalanceException;
 import com.zacseriano.onlinebanking.models.user.User;
 import com.zacseriano.onlinebanking.repositories.AccountRepository;
 import com.zacseriano.onlinebanking.repositories.UserRepository;
-
+/*
+ * Classe do formulário que será usado no método createAccount(), responsável
+ * por criar uma conta.
+ */
 public class AccountForm {
 	
 	@NotNull

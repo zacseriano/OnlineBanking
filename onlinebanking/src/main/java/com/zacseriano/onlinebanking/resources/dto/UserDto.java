@@ -1,7 +1,10 @@
 package com.zacseriano.onlinebanking.resources.dto;
 
 import com.zacseriano.onlinebanking.models.user.User;
-
+/*
+ * Classe de DTO usado para representar uma usuário no registerUser() do UserResource
+ * na consulta de saldo.
+ */
 public class UserDto {
 		
 	private String email;

@@ -8,7 +8,10 @@ import org.springframework.security.core.userdetails.UserDetails;
 import com.zacseriano.onlinebanking.models.account.AccountTransferForm;
 import com.zacseriano.onlinebanking.models.user.User;
 import com.zacseriano.onlinebanking.repositories.UserRepository;
-
+/*
+ * Classe de DTO usado para representar uma transferência no método transfer() do 
+ * AccountResource na transferência entre contas.
+ */
 public class AccountTransferDto {
 
 	private BigDecimal amount;

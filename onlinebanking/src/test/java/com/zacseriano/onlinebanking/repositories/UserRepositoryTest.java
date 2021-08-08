@@ -10,7 +10,9 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import com.zacseriano.onlinebanking.models.user.User;
-
+/*
+ * Classe de testes JUnit 4 responsável por testar o repositório de usuários da API
+ */
 @RunWith(SpringRunner.class)
 @DataJpaTest
 @ActiveProfiles("test")
