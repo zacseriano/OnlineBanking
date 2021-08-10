@@ -5,7 +5,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -52,21 +51,20 @@ public class AuthResource {
 	@PostMapping(value = "/auth")
 	@ApiOperation(value="Valida as credenciais e informa um Token JWT válido para autorização na API.")
 	public ResponseEntity<?> createAuthenticationToken(@RequestBody AuthForm form){
-		UsernamePasswordAuthenticationToken loginData = form.converter();
 		
-		try {
-			Authentication authentication = authManager.authenticate(loginData);
-			String token;
-			if(form.verifyUser(userRepository))
+		if(form.verifyUser(userRepository)) {
+		UsernamePasswordAuthenticationToken loginData = form.converter();
+
+		Authentication authentication = authManager.authenticate(loginData);
+		String token;
+		//if(form.verifyUser(userRepository))
 				token = tokenService.generateToken(authentication);
-			else throw new UserNotFoundException();				
+		//else throw new UserNotFoundException();				
 			
-			String email = form.getEmail();
-			String name = userRepository.findByEmail(email).getName();
+		String email = form.getEmail();
+		String name = userRepository.findByEmail(email).getName();
 			
-			return ResponseEntity.ok(new TokenDto(name, email, token));
-		} catch (AuthenticationException e) {
-			return ResponseEntity.badRequest().build();
-		}
+		return ResponseEntity.ok(new TokenDto(name, email, token));
+		} else throw new UserNotFoundException();
 	}
 }

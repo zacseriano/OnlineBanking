@@ -1,5 +1,7 @@
 package com.zacseriano.onlinebanking.resources;
 
+import static org.junit.Assert.assertTrue;
+
 import java.net.URI;
 
 import org.junit.Before;
@@ -18,6 +20,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
+import com.zacseriano.onlinebanking.exceptions.user.UserNotFoundException;
 import com.zacseriano.onlinebanking.models.user.User;
 import com.zacseriano.onlinebanking.repositories.UserRepository;
 /*
@@ -60,7 +63,8 @@ public class AuthResourceTest {
 				.contentType(MediaType.APPLICATION_JSON))
 		.andExpect(MockMvcResultMatchers
 				.status()
-				.is(400));
+				.is(400))
+		.andExpect(result -> assertTrue(result.getResolvedException() instanceof UserNotFoundException));
 	}
 	
 	@Test
