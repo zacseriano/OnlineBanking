@@ -1,9 +1,9 @@
-package com.zacseriano.onlinebanking.exceptions.handler;
+package com.zacseriano.onlinebanking.exceptions.handler.validation;
 /*
  * DTO usado nos Handlers de Exceção
  */
 public class ErrorFormDto {
-	
+
 	private String field;
 	private String error;
 	
@@ -19,5 +19,4 @@ public class ErrorFormDto {
 	public String getError() {
 		return error;
 	}
-	
 }

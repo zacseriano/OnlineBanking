@@ -1,4 +1,4 @@
-package com.zacseriano.onlinebanking.models.user;
+package com.zacseriano.onlinebanking.models.user.test;
 
 import java.util.Collection;
 

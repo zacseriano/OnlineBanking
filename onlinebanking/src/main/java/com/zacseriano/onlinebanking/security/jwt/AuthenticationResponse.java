@@ -1,4 +1,4 @@
-package com.zacseriano.onlinebanking.security;
+package com.zacseriano.onlinebanking.security.jwt;
 
 import java.io.Serializable;
 /*

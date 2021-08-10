@@ -1,4 +1,4 @@
-package com.zacseriano.onlinebanking.exceptions.handler;
+package com.zacseriano.onlinebanking.exceptions.handler.validation;
 
 import java.util.ArrayList;
 import java.util.List;

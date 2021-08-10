@@ -12,10 +12,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.zacseriano.onlinebanking.exceptions.user.UserNotFoundException;
 import com.zacseriano.onlinebanking.repositories.UserRepository;
-import com.zacseriano.onlinebanking.security.AuthForm;
-import com.zacseriano.onlinebanking.security.ImplementsUserDetailsService;
-import com.zacseriano.onlinebanking.security.TokenDto;
-import com.zacseriano.onlinebanking.security.TokenService;
+import com.zacseriano.onlinebanking.security.config.ImplementsUserDetailsService;
+import com.zacseriano.onlinebanking.security.form.AuthForm;
+import com.zacseriano.onlinebanking.security.jwt.TokenDto;
+import com.zacseriano.onlinebanking.security.jwt.TokenService;
 
 import io.swagger.annotations.ApiOperation;
 
@@ -61,7 +61,10 @@ public class AuthResource {
 				token = tokenService.generateToken(authentication);
 			else throw new UserNotFoundException();				
 			
-			return ResponseEntity.ok(new TokenDto(token, "Bearer"));
+			String email = form.getEmail();
+			String name = userRepository.findByEmail(email).getName();
+			
+			return ResponseEntity.ok(new TokenDto(name, email, token));
 		} catch (AuthenticationException e) {
 			return ResponseEntity.badRequest().build();
 		}

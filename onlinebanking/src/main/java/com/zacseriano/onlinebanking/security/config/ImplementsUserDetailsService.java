@@ -1,4 +1,4 @@
-package com.zacseriano.onlinebanking.security;
+package com.zacseriano.onlinebanking.security.config;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;

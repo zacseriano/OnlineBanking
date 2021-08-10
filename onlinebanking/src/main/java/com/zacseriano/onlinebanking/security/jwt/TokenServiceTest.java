@@ -1,20 +1,21 @@
-package com.zacseriano.onlinebanking.security;
+package com.zacseriano.onlinebanking.security.jwt;
 
 import java.util.Date;
 
+import org.springframework.context.annotation.Profile;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
-import com.zacseriano.onlinebanking.models.user.User;
+import com.zacseriano.onlinebanking.models.user.test.UserTest;
 
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
-
 /*
- * Classe que configura o service de criação de token com o Jwts.builder()
+ * TokenService utilizado no ambiente de testes para gerar um JWT para um UserTest.
  */
+@Profile(value="test")
 @Service
-public class TokenService {
+public class TokenServiceTest {
 	
 	private long expiration = 600000;
 	
@@ -22,13 +23,13 @@ public class TokenService {
 
 	public String generateToken(Authentication authentication) {
 			
-		User logged = (User) authentication.getPrincipal();
+		UserTest logged = (UserTest) authentication.getPrincipal();
 		Date today = new Date();
 		Date expirationDate = new Date(today.getTime() + expiration);
 		
 		return Jwts.builder()
 				.setIssuer("Online Banking")
-				.setSubject(logged.getEmail().toString())
+				.setSubject(logged.getUsername())
 				.setIssuedAt(today)
 				.setExpiration(expirationDate)
 				.signWith(SignatureAlgorithm.HS256, secret)

@@ -7,12 +7,12 @@ import org.springframework.web.bind.annotation.ResponseStatus;
  * usuário logado tenta fazer uma operação em uma conta não registrada
  * nas suas credenciais.  
  */
-@ResponseStatus(value= HttpStatus.BAD_REQUEST, reason="Conta de origem não pertence ao usuário logado.") 
+@ResponseStatus(value= HttpStatus.BAD_REQUEST, reason="A conta solicitada não pertence ao usuário logado.") 
 public class UnauthorizedUserException extends RuntimeException {
 	private static final long serialVersionUID = 6648725043534411041L;
 
 	public UnauthorizedUserException() {
-		super("Conta de origem não pertence ao usuário logado.");
+		super("A conta solicitada não pertence ao usuário logado.");
 	}
 
 	public UnauthorizedUserException(String msg, Throwable t) {

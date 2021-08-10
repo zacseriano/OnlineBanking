@@ -31,20 +31,21 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.boot.test.mock.mockito.MockitoTestExecutionListener;
 
 import com.zacseriano.onlinebanking.repositories.UserRepository;
-import com.zacseriano.onlinebanking.security.AuthForm;
-import com.zacseriano.onlinebanking.security.ImplementsUserDetailsService;
-import com.zacseriano.onlinebanking.security.TokenServiceTest;
+import com.zacseriano.onlinebanking.security.config.ImplementsUserDetailsService;
+import com.zacseriano.onlinebanking.security.form.AuthForm;
+import com.zacseriano.onlinebanking.security.jwt.TokenServiceTest;
 import com.zacseriano.onlinebanking.exceptions.account.AccountNotFoundException;
 import com.zacseriano.onlinebanking.exceptions.account.DestinationAccountNotFoundException;
 import com.zacseriano.onlinebanking.exceptions.account.NegativeBalanceException;
 import com.zacseriano.onlinebanking.exceptions.account.NegativeSourceBalanceException;
+import com.zacseriano.onlinebanking.exceptions.account.SmallAccountNumberException;
 import com.zacseriano.onlinebanking.exceptions.account.SourceAccountNotFoundException;
 import com.zacseriano.onlinebanking.exceptions.user.UnauthorizedUserException;
 import com.zacseriano.onlinebanking.exceptions.user.UserNotFoundException;
 import com.zacseriano.onlinebanking.models.account.Account;
 import com.zacseriano.onlinebanking.models.user.User;
-import com.zacseriano.onlinebanking.models.user.UserTest;
-import com.zacseriano.onlinebanking.models.user.UserTestFactory;
+import com.zacseriano.onlinebanking.models.user.test.UserTest;
+import com.zacseriano.onlinebanking.models.user.test.UserTestFactory;
 import com.zacseriano.onlinebanking.repositories.AccountRepository;
 /*
  * Classe de testes JUnit 4 responsável por testar todos os métodos do controller AccountResource
@@ -139,12 +140,12 @@ public class AccountResourceTest {
 				.is(201));
 	}
 	/*
-	 * Testa uma criação de conta com saldo negativo
+	 * Testa uma criação de conta com número inválido
 	 */
 	@Test
-	public void shouldReturn400AtNegativeAccountBalanceCreation() throws Exception {
+	public void shouldReturn400AtInvalidNumberAccountCreation() throws Exception {
 		URI uri = new URI("/account");
-		String json = "{\"number\":\"1111-1\",\"balance\":\"-10\"}";
+		String json = "{\"number\":\"11\",\"balance\":\"0\"}";
 		
 		AuthForm form = new AuthForm(EMAIL, PASSWORD);
 		
@@ -157,7 +158,7 @@ public class AccountResourceTest {
 		.andExpect(MockMvcResultMatchers
 				.status()
 				.is(400))
-		.andExpect(result -> assertTrue(result.getResolvedException() instanceof NegativeBalanceException));
+		.andExpect(result -> assertTrue(result.getResolvedException() instanceof SmallAccountNumberException));
 	}
 	/*
 	 * Testa uma criação de conta com saldo negativo

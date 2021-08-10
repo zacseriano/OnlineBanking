@@ -1,4 +1,4 @@
-package com.zacseriano.onlinebanking.security;
+package com.zacseriano.onlinebanking.security.form;
 
 import javax.validation.constraints.NotNull;
 

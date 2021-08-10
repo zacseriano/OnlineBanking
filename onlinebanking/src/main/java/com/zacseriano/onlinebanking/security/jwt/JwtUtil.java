@@ -1,4 +1,4 @@
-package com.zacseriano.onlinebanking.security;
+package com.zacseriano.onlinebanking.security.jwt;
 
 import java.util.Date;
 import java.util.HashMap;
@@ -25,21 +25,21 @@ public class JwtUtil {
     /**
 	 * Método que extrai o username e insere no claim
 	 */
-    public String extractUsername(String token) {
+    public String extractUsername(String token){
         return extractClaim(token, Claims::getSubject);
     }
     
     /**
    	 * Método que extrai a data de expiração e insere no claim
    	 */
-    public Date extractExpiration(String token) {
+    public Date extractExpiration(String token){
         return extractClaim(token, Claims::getExpiration);
     }
     
     /**
    	 * Método que extrai as claims anteriores e concatena
    	 */
-    public <T> T extractClaim(String token, Function<Claims, T> claimsResolver) {
+    public <T> T extractClaim(String token, Function<Claims, T> claimsResolver){
         final Claims claims = extractAllClaims(token);
         return claimsResolver.apply(claims);
     }
@@ -47,14 +47,14 @@ public class JwtUtil {
     /**
    	 * Método que faz o parse final das claims para o token de JWT
    	 */
-    private Claims extractAllClaims(String token) {
-        return Jwts.parser().setSigningKey(secret).parseClaimsJws(token).getBody();
+    private Claims extractAllClaims(String token){
+    	return Jwts.parser().setSigningKey(secret).parseClaimsJws(token).getBody();
     }
     
     /**
    	 * Método que checa a data de expiração do token
    	 */
-    private Boolean isTokenExpired(String token) {
+    private Boolean isTokenExpired(String token){
         return extractExpiration(token).before(new Date());
     }
     
@@ -85,7 +85,7 @@ public class JwtUtil {
    	 * Método que valida o token recebendo e checando os dados recebidos da classe UserDetails 
    	 * implementado pelas classes de Cliente e Gestor
    	 */
-    public Boolean validateToken(String token, UserDetails userDetails) {
+    public Boolean validateToken(String token, UserDetails userDetails){
         final String username = extractUsername(token);
         return (username.equals(userDetails.getUsername()) && !isTokenExpired(token));
     }

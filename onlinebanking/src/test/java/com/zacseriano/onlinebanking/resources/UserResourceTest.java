@@ -21,6 +21,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 
 import com.zacseriano.onlinebanking.exceptions.user.ExistingUserException;
 import com.zacseriano.onlinebanking.models.user.User;
@@ -39,7 +40,11 @@ public class UserResourceTest {
 	
 	@MockBean
 	private UserRepository repository;
-
+	
+	/*
+	 * Configura para antes do teste, salvar um usuário que servirá como modelo
+	 * para comparação para evitar duplicidade
+	 */
 	@Before
 	public void setup() throws UsernameNotFoundException, ParseException {
 		
@@ -50,7 +55,9 @@ public class UserResourceTest {
 		Mockito.when(repository.findByEmail(user.getEmail()))
 		.thenReturn(user);
 	}
-	
+	/*
+	 * Testa um registro válido de usuário
+	 */
 	@Test
 	public void shouldReturn201AtUserRegister() throws Exception {
 		URI uri = new URI("/users");
@@ -82,6 +89,108 @@ public class UserResourceTest {
 				.status()
 				.is(400))
 		.andExpect(result -> assertTrue(result.getResolvedException() instanceof ExistingUserException));
+	}
+	
+	@Test
+	public void shouldReturn400AtInvalidEmailUserRegister() throws Exception {
+		URI uri = new URI("/users");
+		
+		String json = "{\"email\":\"a\",\"password\":\"123456\",\"name\":\"John Wrong\"}";
+		
+		mockMvc
+		.perform(MockMvcRequestBuilders
+				.post(uri)
+				.content(json)
+				.contentType(MediaType.APPLICATION_JSON))
+		.andExpect(MockMvcResultMatchers
+				.status()
+				.is(400))
+		.andExpect(result -> assertTrue(result.getResolvedException() instanceof MethodArgumentNotValidException));;
+	}
+	
+	@Test
+	public void shouldReturn400AtNullEmailUserRegister() throws Exception {
+		URI uri = new URI("/users");
+		
+		String json = "{\"email\":\"\",\"password\":\"123456\",\"name\":\"John Wrong\"}";
+		
+		mockMvc
+		.perform(MockMvcRequestBuilders
+				.post(uri)
+				.content(json)
+				.contentType(MediaType.APPLICATION_JSON))
+		.andExpect(MockMvcResultMatchers
+				.status()
+				.is(400))
+		.andExpect(result -> assertTrue(result.getResolvedException() instanceof MethodArgumentNotValidException));;
+	}
+	
+	@Test
+	public void shouldReturn400AtNullPasswordUserRegister() throws Exception {
+		URI uri = new URI("/users");
+		
+		String json = "{\"email\":\"default@email.com\",\"password\":\"\",\"name\":\"John Wrong\"}";
+		
+		mockMvc
+		.perform(MockMvcRequestBuilders
+				.post(uri)
+				.content(json)
+				.contentType(MediaType.APPLICATION_JSON))
+		.andExpect(MockMvcResultMatchers
+				.status()
+				.is(400))
+		.andExpect(result -> assertTrue(result.getResolvedException() instanceof MethodArgumentNotValidException));;
+	}
+	
+	@Test
+	public void shouldReturn400AtSmallPasswordUserRegister() throws Exception {
+		URI uri = new URI("/users");
+		
+		String json = "{\"email\":\"default@email.com\",\"password\":\"123\",\"name\":\"John Wrong\"}";
+		
+		mockMvc
+		.perform(MockMvcRequestBuilders
+				.post(uri)
+				.content(json)
+				.contentType(MediaType.APPLICATION_JSON))
+		.andExpect(MockMvcResultMatchers
+				.status()
+				.is(400))
+		.andExpect(result -> assertTrue(result.getResolvedException() instanceof MethodArgumentNotValidException));;
+	}
+	
+	@Test
+	public void shouldReturn400AtInvalidNameUserRegister() throws Exception {
+		URI uri = new URI("/users");
+		
+		String json = "{\"email\":\"default@email.com\",\"password\":\"123\",\"name\":\"A\"}";
+		
+		mockMvc
+		.perform(MockMvcRequestBuilders
+				.post(uri)
+				.content(json)
+				.contentType(MediaType.APPLICATION_JSON))
+		.andExpect(MockMvcResultMatchers
+				.status()
+				.is(400))
+		.andExpect(result -> assertTrue(result.getResolvedException() instanceof MethodArgumentNotValidException));;
+	}
+	
+	@Test
+	public void shouldReturn400AtNullNameUserRegister() throws Exception {
+		URI uri = new URI("/users");
+		
+		String json = "{\"email\":\"default@email.com\",\"password\":\"123\",\"name\":\"\"}";
+		
+		mockMvc
+		.perform(MockMvcRequestBuilders
+				.post(uri)
+				.content(json)
+				.contentType(MediaType.APPLICATION_JSON))
+		.andExpect(MockMvcResultMatchers
+				.status()
+				.is(400))
+		.andExpect(result -> assertTrue(result.getResolvedException() instanceof MethodArgumentNotValidException));;
 	}	
 
 }

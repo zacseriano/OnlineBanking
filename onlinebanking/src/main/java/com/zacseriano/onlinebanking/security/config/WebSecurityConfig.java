@@ -1,4 +1,4 @@
-package com.zacseriano.onlinebanking.security;
+package com.zacseriano.onlinebanking.security.config;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -12,6 +12,9 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+import com.zacseriano.onlinebanking.exceptions.handler.auth.AuthenticationHandler;
+import com.zacseriano.onlinebanking.security.jwt.JwtRequestFilter;
+
 /*
  * Classe que implementa as configurações da Spring Security do Online Banking API
  */
@@ -23,6 +26,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter{
 	private ImplementsUserDetailsService userDetailsService;
 	@Autowired
 	private JwtRequestFilter jwtRequestFilter;
+	@Autowired
+	private AuthenticationHandler authHandler;
 	
 	/*
 	 * Campo que indica para que o filtro de autenticação não impeça o Swagger de funcionar
@@ -63,12 +68,15 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter{
 	
 	@Override
 	protected void configure(HttpSecurity httpSecurity) throws Exception{
+		
 		httpSecurity.csrf().disable().authorizeRequests()
 		.antMatchers("/account/**").hasRole("USER")
 		.antMatchers(AUTH_WHITELIST).permitAll()  
 		.anyRequest().authenticated().and()
-		.exceptionHandling().and().sessionManagement()
+		.exceptionHandling().accessDeniedHandler(authHandler).authenticationEntryPoint(authHandler)
+		.and().sessionManagement()
 		.sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 		httpSecurity.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
+
 	}		
 }

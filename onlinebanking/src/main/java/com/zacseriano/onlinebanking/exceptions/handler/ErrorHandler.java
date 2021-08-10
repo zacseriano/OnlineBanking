@@ -14,6 +14,8 @@ import com.zacseriano.onlinebanking.exceptions.account.SourceAccountNotFoundExce
 import com.zacseriano.onlinebanking.exceptions.user.ExistingUserException;
 import com.zacseriano.onlinebanking.exceptions.user.UnauthorizedUserException;
 import com.zacseriano.onlinebanking.exceptions.user.UserNotFoundException;
+import com.zacseriano.onlinebanking.exceptions.account.SmallAccountNumberException;
+
 /*
  * Handler que trata as exceções gerais da API usando as classes do pacote 
  * exceptions.handler devolvendo uma mensagem ao invés da stack trace completa.
@@ -40,6 +42,15 @@ public class ErrorHandler {
 		
 	}
 
+	@ResponseStatus(code = HttpStatus.BAD_REQUEST)
+	@ExceptionHandler(SmallAccountNumberException.class)
+	public ErrorDto handle(SmallAccountNumberException exception) {
+		String message = exception.getMessage();
+		
+		return new ErrorDto(message);
+		
+	}
+	
 	@ResponseStatus(code = HttpStatus.BAD_REQUEST)
 	@ExceptionHandler(UserNotFoundException.class)
 	public ErrorDto handle(UserNotFoundException exception) {

@@ -1,4 +1,4 @@
-package com.zacseriano.onlinebanking.security;
+package com.zacseriano.onlinebanking.security.jwt;
 
 import java.io.IOException;
 
@@ -15,6 +15,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
+import com.zacseriano.onlinebanking.security.config.ImplementsUserDetailsService;
+
 /**
 * Classe que implementa uma base do filtro JwtRequest que visa garantir uma única execução por despacho de 
 * solicitação, em qualquer servlet container. Se tivermos um token válido, daí a solicitação estará concluída.
@@ -27,7 +29,7 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 
     @Autowired
     private JwtUtil jwtUtil;
-    
+
     /**
 	 * Método que implementa o doFilter, mas se certificando que é executado apenas uma vez por solicitação
 	 * em uma única thread de solicitação.
@@ -42,7 +44,7 @@ public class JwtRequestFilter extends OncePerRequestFilter {
         String jwt = null;
 
         if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
-            jwt = authorizationHeader.substring(7);
+            jwt = authorizationHeader.substring(7);        
             username = jwtUtil.extractUsername(jwt);
         }
 
@@ -58,7 +60,7 @@ public class JwtRequestFilter extends OncePerRequestFilter {
                 usernamePasswordAuthenticationToken
                         .setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                 SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
-            }
+            } 
         }
         chain.doFilter(request, response);
     }

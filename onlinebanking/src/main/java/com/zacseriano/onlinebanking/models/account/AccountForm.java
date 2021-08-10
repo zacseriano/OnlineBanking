@@ -9,6 +9,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import com.zacseriano.onlinebanking.exceptions.account.ExistingAccountException;
 import com.zacseriano.onlinebanking.exceptions.account.NegativeBalanceException;
+import com.zacseriano.onlinebanking.exceptions.account.SmallAccountNumberException;
 import com.zacseriano.onlinebanking.models.user.User;
 import com.zacseriano.onlinebanking.repositories.AccountRepository;
 import com.zacseriano.onlinebanking.repositories.UserRepository;
@@ -24,6 +25,11 @@ public class AccountForm {
 	@NotNull
 	private BigDecimal balance;	
 	
+	public AccountForm(String number, BigDecimal hundred) {
+		this.number = number;
+		this.balance = hundred;
+	}
+
 	public String getNumber() {
 		return number;
 	}
@@ -49,6 +55,8 @@ public class AccountForm {
 		
 		Account account = accountRepository.findByNumber(this.number);
 		if(account != null) throw new ExistingAccountException();
+		if(this.getNumber() == null ||
+				this.getNumber().length()< 6) throw new SmallAccountNumberException();
 		
 		BigDecimal zero = new BigDecimal("0");
 		if(this.balance.compareTo(zero) == -1) throw new NegativeBalanceException();	
